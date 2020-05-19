@@ -44,6 +44,13 @@ class TransactionsRepository {
   public create({ title, value, type }: CreateTransaction): Transaction {
     const transaction = new Transaction({ title, value, type });
 
+    if (type === 'outcome') {
+      const { income, outcome } = this.getBalance();
+      const copyOutcome = outcome + value;
+      if (copyOutcome > income) {
+        throw Error('Outcome não pode ser maior que income');
+      }
+    }
     this.transactions.push(transaction);
 
     return transaction;
